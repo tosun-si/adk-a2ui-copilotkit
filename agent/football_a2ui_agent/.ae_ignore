@@ -1,0 +1,4 @@
+# Excluded from the source bundle uploaded by `adk deploy agent_engine`.
+__pycache__
+*.pyc
+.adk

@@ -1,0 +1,60 @@
+# Full local stack — one image for the agent, two runtimes + the webapp:
+#   adk-web — native ADK dev UI (`adk web`) on :8080       → talk demo, step 1
+#   agent   — same agent as an AG-UI endpoint (ag-ui-adk) on :8000 (/chat)
+#   webapp  — Next.js + CopilotKit v2 + dynamic A2UI on :3000
+#
+# GCP credentials: mounts your local Application Default Credentials into the
+# agent containers (Agent Registry + BigQuery). Run `gcloud auth application-default
+# login` if the file is missing or expired (expired ADC = no answer at all).
+#
+# ${VAR:-default} values fall back to the shared demo project when the shell env
+# (direnv) is empty, so `docker compose up --build` works out of the box.
+
+x-agent-base: &agent-base
+  build:
+    context: ./agent
+    dockerfile: Dockerfile
+  image: football-a2ui-agent:local
+  environment:
+    GCP_PROJECT_ID: ${GCP_PROJECT_ID:-gb-poc-373711}
+    GOOGLE_CLOUD_PROJECT: ${GOOGLE_CLOUD_PROJECT:-gb-poc-373711}
+    LOCATION: ${LOCATION:-europe-west1}
+    GOOGLE_CLOUD_LOCATION: ${GOOGLE_CLOUD_LOCATION:-europe-west1}
+    GOOGLE_GENAI_USE_VERTEXAI: ${GOOGLE_GENAI_USE_VERTEXAI:-true}
+    # Model + the location its calls are routed to. gemini-3.8-flash is NOT in
+    # europe-west1 (404) → MODEL_LOCATION=global. Empty = GOOGLE_CLOUD_LOCATION.
+    MODEL: ${MODEL:-gemini-2.5-flash}
+    MODEL_LOCATION: ${MODEL_LOCATION:-}
+    GOOGLE_APPLICATION_CREDENTIALS: /tmp/adc.json
+  volumes:
+    - ${HOME}/.config/gcloud/application_default_credentials.json:/tmp/adc.json:ro
+
+services:
+  # Native ADK dev UI: chat, events, tool calls, trace view. A2UI is OFF here
+  # (no CopilotKit runtime → no render_a2ui tool), plain text answers.
+  adk-web:
+    <<: *agent-base
+    ports:
+      - "8080:8080"
+    entrypoint: ["adk"]
+    command: ["web", "--host", "0.0.0.0", "--port", "8080", "."]
+
+  # AG-UI endpoint consumed by the webapp. server.py turns ENABLE_A2UI on.
+  agent:
+    <<: *agent-base
+    ports:
+      - "8000:8000"
+
+  webapp:
+    build:
+      context: ./webapp
+      dockerfile: Dockerfile
+    image: football-a2ui-webapp:local
+    ports:
+      - "3000:3000"
+    environment:
+      # Server-side: the CopilotKit runtime connects to the agent's AG-UI
+      # endpoint over the compose network.
+      - ADK_AGUI_URL=http://agent:8000/chat
+    depends_on:
+      - agent

@@ -1,0 +1,19 @@
+# Copy to .envrc (gitignored) and run `direnv allow`.
+#
+# GCP — the agent reads these both locally and in docker compose.
+export GCP_PROJECT_ID=gb-poc-373711
+export GOOGLE_CLOUD_PROJECT=$GCP_PROJECT_ID
+export LOCATION=europe-west1
+export GOOGLE_CLOUD_LOCATION=$LOCATION
+export GOOGLE_GENAI_USE_VERTEXAI=true
+
+# Agent Engine instance to update / query (see talks/DEMO_KIT.md).
+export AGENT_ENGINE_ID=5448783803071856640
+
+# Hint only — nothing is installed automatically: these skills are third-party
+# instructions that run with full agent permissions, so installing them stays an
+# explicit, reviewed action.
+if [ ! -d .claude/skills/google-agents-cli-workflow ]; then
+  echo "ℹ️  agents-cli skills not installed in this repo — run: make agents-cli-skills"
+  echo "    (or: uvx google-agents-cli setup --workspace --agent claude-code)"
+fi

@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+.python-version
+agent/football_a2ui_agent/requirements.txt
+
+# Node / Next
+node_modules/
+.next/
+*.tsbuildinfo
+
+# Env / secrets
+.env.local
+.envrc
+
+# OS
+.DS_Store
+agent/football_a2ui_agent_tmp*/
+
+# agents-cli skills installed in workspace scope (see README) — vendored copies,
+# reinstall with: uvx google-agents-cli setup --workspace --agent claude-code
+.claude/skills/
+
+# JetBrains IDE
+.idea/
+*.iml
+
+# Talk decks — generated/edited artifacts, kept in Drive (19 MB of pptx)
+# Regenerate the base deck with: make slides
+talks/slides/

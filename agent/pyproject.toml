@@ -1,0 +1,38 @@
+[project]
+name = "football-a2ui-agent"
+version = "0.1.0"
+description = "ADK BigQuery agent (Qatar 2022): adk web, Agent Engine (Agent Platform) and a native AG-UI endpoint for dynamic A2UI"
+requires-python = ">=3.11"
+# Agent runtime deps only — this is what gets exported to requirements.txt and
+# shipped to Agent Engine (`uv export --no-default-groups`).
+dependencies = [
+    # otel-gcp: auto-instruments Gemini / httpx calls into spans.
+    "google-adk[agent-identity, mcp, a2a, otel-gcp]>=2.6.0",
+    "google-cloud-aiplatform[agent-engines]>=1.154.0",
+    # `--otel_to_cloud` exports spans/metrics over OTLP/HTTP to
+    # telemetry.googleapis.com. Without this package the export silently
+    # no-ops on Agent Engine → empty Trace tab.
+    "opentelemetry-exporter-otlp-proto-http>=1.38.0",
+    # Logs → Cloud Logging, correlated with the traces.
+    "opentelemetry-exporter-gcp-logging>=1.9.0a0,<=1.12.0a0",
+    # ADK converts the AE project number → project id with it so that traces and
+    # logs are associated (otherwise only a warning, but the link is lost).
+    "google-cloud-resource-manager>=1.12,<2",
+]
+
+[dependency-groups]
+# AG-UI server (server.py) for the CopilotKit + A2UI webapp. Installed locally
+# by default (`uv sync`), but NOT shipped to Agent Engine: the deploy script
+# exports with `--no-default-groups`.
+agui = [
+    "ag-ui-adk>=0.7.0",
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.34.0",
+]
+dev = [
+    "ruff>=0.9.0",
+]
+
+[tool.uv]
+package = false
+default-groups = ["dev", "agui"]
