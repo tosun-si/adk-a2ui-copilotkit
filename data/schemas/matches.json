@@ -1,0 +1,122 @@
+[
+  {
+    "name": "match_id",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Match identifier, 1..104 in chronological order."
+  },
+  {
+    "name": "match_date",
+    "type": "DATE",
+    "mode": "REQUIRED",
+    "description": "Date of the match."
+  },
+  {
+    "name": "kickoff_local",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Local kick-off time with UTC offset, e.g. '13:00 UTC-6'."
+  },
+  {
+    "name": "stage",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Stage: Group stage, Round of 32, Round of 16, Quarter-final, Semi-final, Third place, Final."
+  },
+  {
+    "name": "stage_order",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Stage order for sorting: 1 = Group stage ... 7 = Final."
+  },
+  {
+    "name": "group_letter",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Group letter A..L for group-stage matches, NULL otherwise."
+  },
+  {
+    "name": "home_team",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "First-named team."
+  },
+  {
+    "name": "away_team",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Second-named team."
+  },
+  {
+    "name": "home_score",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Home goals after extra time (penalty shoot-out excluded)."
+  },
+  {
+    "name": "away_score",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Away goals after extra time (penalty shoot-out excluded)."
+  },
+  {
+    "name": "home_score_90",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Home goals after 90 minutes."
+  },
+  {
+    "name": "away_score_90",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Away goals after 90 minutes."
+  },
+  {
+    "name": "extra_time",
+    "type": "BOOLEAN",
+    "mode": "REQUIRED",
+    "description": "TRUE if the match went to extra time."
+  },
+  {
+    "name": "home_penalties",
+    "type": "INTEGER",
+    "mode": "NULLABLE",
+    "description": "Home penalty shoot-out score, NULL if no shoot-out."
+  },
+  {
+    "name": "away_penalties",
+    "type": "INTEGER",
+    "mode": "NULLABLE",
+    "description": "Away penalty shoot-out score, NULL if no shoot-out."
+  },
+  {
+    "name": "winner",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Winning team (including on penalties), NULL for a draw."
+  },
+  {
+    "name": "venue",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Stadium and city."
+  },
+  {
+    "name": "attendance",
+    "type": "INTEGER",
+    "mode": "NULLABLE",
+    "description": "Spectators."
+  },
+  {
+    "name": "referee",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Main referee."
+  },
+  {
+    "name": "referee_country",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "3-letter code of the referee's country."
+  }
+]

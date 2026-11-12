@@ -1,0 +1,92 @@
+[
+  {
+    "name": "team",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "National team (English name)."
+  },
+  {
+    "name": "fifa_code",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "3-letter FIFA code."
+  },
+  {
+    "name": "group_letter",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Group letter A..L."
+  },
+  {
+    "name": "confederation",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "UEFA, CONMEBOL, CONCACAF, CAF, AFC, OFC."
+  },
+  {
+    "name": "stage_reached",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Champion, Runner-up, Third place, Fourth place, Quarter-final, Round of 16, Round of 32, Group stage."
+  },
+  {
+    "name": "final_rank_bucket",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Final ranking: 1, 2, 3, 4, then 5 (quarter-finalists), 9 (round of 16), 17 (round of 32), 33 (group stage). Sort ascending for best teams."
+  },
+  {
+    "name": "matches_played",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Matches played."
+  },
+  {
+    "name": "wins",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Wins (penalty shoot-out wins included)."
+  },
+  {
+    "name": "draws",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Draws (group stage only)."
+  },
+  {
+    "name": "losses",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Losses (penalty shoot-out losses included)."
+  },
+  {
+    "name": "goals_for",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Goals scored (after extra time, shoot-outs excluded)."
+  },
+  {
+    "name": "goals_against",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Goals conceded."
+  },
+  {
+    "name": "clean_sheets",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Matches without conceding."
+  },
+  {
+    "name": "yellow_cards",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Yellow cards received by the players."
+  },
+  {
+    "name": "red_cards",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Red cards received by the players."
+  }
+]

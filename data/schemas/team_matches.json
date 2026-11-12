@@ -1,0 +1,104 @@
+[
+  {
+    "name": "match_id",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Match identifier, joins matches.match_id. 1..104 in chronological order."
+  },
+  {
+    "name": "match_date",
+    "type": "DATE",
+    "mode": "REQUIRED",
+    "description": "Date of the match."
+  },
+  {
+    "name": "stage",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Stage: Group stage, Round of 32, Round of 16, Quarter-final, Semi-final, Third place, Final."
+  },
+  {
+    "name": "stage_order",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Stage order for sorting: 1 = Group stage ... 6 = Third place, 7 = Final."
+  },
+  {
+    "name": "group_letter",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Group letter A..L for group-stage matches, NULL otherwise."
+  },
+  {
+    "name": "team",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "The team this row is about (English name)."
+  },
+  {
+    "name": "opponent",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "The opposing team."
+  },
+  {
+    "name": "goals_for",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Goals scored by `team` after extra time (own goals by the opponent included, shoot-out excluded)."
+  },
+  {
+    "name": "goals_against",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Goals conceded by `team` after extra time."
+  },
+  {
+    "name": "goals_for_90",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Goals scored by `team` after 90 minutes."
+  },
+  {
+    "name": "goals_against_90",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Goals conceded by `team` after 90 minutes."
+  },
+  {
+    "name": "extra_time",
+    "type": "BOOLEAN",
+    "mode": "REQUIRED",
+    "description": "TRUE if the match went to extra time."
+  },
+  {
+    "name": "penalties_for",
+    "type": "INTEGER",
+    "mode": "NULLABLE",
+    "description": "Shoot-out score of `team`, NULL if no shoot-out."
+  },
+  {
+    "name": "penalties_against",
+    "type": "INTEGER",
+    "mode": "NULLABLE",
+    "description": "Shoot-out score of the opponent, NULL if no shoot-out."
+  },
+  {
+    "name": "result",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "W, D or L for `team`. Shoot-out wins are W, shoot-out losses L."
+  },
+  {
+    "name": "venue",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Stadium and city."
+  },
+  {
+    "name": "attendance",
+    "type": "INTEGER",
+    "mode": "NULLABLE",
+    "description": "Spectators."
+  }
+]

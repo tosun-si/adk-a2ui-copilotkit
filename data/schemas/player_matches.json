@@ -1,0 +1,116 @@
+[
+  {
+    "name": "match_id",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Match identifier, joins matches.match_id. 1..104 in chronological order."
+  },
+  {
+    "name": "match_date",
+    "type": "DATE",
+    "mode": "REQUIRED",
+    "description": "Date of the match."
+  },
+  {
+    "name": "stage",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Stage: Group stage, Round of 32, Round of 16, Quarter-final, Semi-final, Third place, Final."
+  },
+  {
+    "name": "stage_order",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Stage order for sorting: 1 = Group stage ... 6 = Third place, 7 = Final."
+  },
+  {
+    "name": "player_name",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Player name with accents as published by FIFA, e.g. 'Kylian Mbappé', 'Warren Zaïre-Emery'. Display this."
+  },
+  {
+    "name": "player_search_name",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Player name in lower-case ASCII without accents or punctuation, e.g. 'kylian mbappe', 'warren zaire emery'. Filter on this with LIKE."
+  },
+  {
+    "name": "team",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "National team (English name), e.g. 'France', 'United States', 'Ivory Coast', 'South Korea'."
+  },
+  {
+    "name": "opponent",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Opposing national team."
+  },
+  {
+    "name": "position",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Position code: GK, DF, MF, FW."
+  },
+  {
+    "name": "started",
+    "type": "BOOLEAN",
+    "mode": "REQUIRED",
+    "description": "TRUE if the player was in the starting XI, FALSE if he came on as a substitute."
+  },
+  {
+    "name": "minutes_played",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Minutes played in this match (90, or 120 with extra time; stoppage time not counted)."
+  },
+  {
+    "name": "goals",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Goals scored in this match (own goals excluded)."
+  },
+  {
+    "name": "penalty_goals",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Penalty goals in this match (shoot-outs excluded)."
+  },
+  {
+    "name": "own_goals",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Own goals in this match."
+  },
+  {
+    "name": "yellow_cards",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Yellow cards in this match."
+  },
+  {
+    "name": "red_cards",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Red cards in this match."
+  },
+  {
+    "name": "team_goals",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Goals scored by the player's team in this match (after extra time)."
+  },
+  {
+    "name": "opponent_goals",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Goals scored by the opponent (after extra time)."
+  },
+  {
+    "name": "result",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Result for the player's team: W, D or L. A match won on penalties is W, lost on penalties is L."
+  }
+]

@@ -1,0 +1,146 @@
+[
+  {
+    "name": "player_name",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Player name with accents as published by FIFA, e.g. 'Kylian Mbappé', 'Warren Zaïre-Emery'. Display this."
+  },
+  {
+    "name": "player_search_name",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Player name in lower-case ASCII without accents or punctuation, e.g. 'kylian mbappe', 'warren zaire emery'. Filter on this with LIKE."
+  },
+  {
+    "name": "team",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "National team (English name), e.g. 'France', 'United States', 'Ivory Coast', 'South Korea'."
+  },
+  {
+    "name": "fifa_code",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "3-letter FIFA code of the national team, e.g. FRA, ARG."
+  },
+  {
+    "name": "confederation",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Confederation of the national team: UEFA, CONMEBOL, CONCACAF, CAF, AFC, OFC."
+  },
+  {
+    "name": "team_stage_reached",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "How far the player's national team went: Champion, Runner-up, Third place, Fourth place, Quarter-final, Round of 16, Round of 32, Group stage."
+  },
+  {
+    "name": "jersey_number",
+    "type": "INTEGER",
+    "mode": "NULLABLE",
+    "description": "Shirt number in the national team."
+  },
+  {
+    "name": "position",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Position code: GK (goalkeeper), DF (defender), MF (midfielder), FW (forward)."
+  },
+  {
+    "name": "position_label",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Position in words: Goalkeeper, Defender, Midfielder, Forward."
+  },
+  {
+    "name": "club",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "Club at the time of the tournament, e.g. 'Paris Saint-Germain', 'Real Madrid C. F.', 'FC Bayern München'."
+  },
+  {
+    "name": "club_country",
+    "type": "STRING",
+    "mode": "NULLABLE",
+    "description": "3-letter code of the club's country (league), e.g. FRA for Ligue 1 clubs, ENG, ESP, GER, ITA."
+  },
+  {
+    "name": "date_of_birth",
+    "type": "DATE",
+    "mode": "NULLABLE",
+    "description": "Date of birth."
+  },
+  {
+    "name": "age_at_tournament",
+    "type": "INTEGER",
+    "mode": "NULLABLE",
+    "description": "Age in years on 2026-06-11 (opening match)."
+  },
+  {
+    "name": "matches_played",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Number of matches the player appeared in (started or came on)."
+  },
+  {
+    "name": "matches_started",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Number of matches started."
+  },
+  {
+    "name": "minutes_played",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Total minutes played (stoppage time not counted)."
+  },
+  {
+    "name": "goals",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Goals scored, own goals excluded, penalties included (shoot-outs excluded)."
+  },
+  {
+    "name": "assists",
+    "type": "INTEGER",
+    "mode": "NULLABLE",
+    "description": "Assists as counted by FBref. NULL only if the assists source was not loaded."
+  },
+  {
+    "name": "penalty_goals",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Goals scored from a penalty during play (shoot-outs excluded)."
+  },
+  {
+    "name": "own_goals",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Own goals conceded by this player."
+  },
+  {
+    "name": "yellow_cards",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Yellow cards received (a second yellow counts as a red card, not as a yellow)."
+  },
+  {
+    "name": "red_cards",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Red cards received (straight red or second yellow)."
+  },
+  {
+    "name": "goals_per_90",
+    "type": "FLOAT",
+    "mode": "NULLABLE",
+    "description": "Goals per 90 minutes played. NULL if the player never played."
+  },
+  {
+    "name": "minutes_per_goal",
+    "type": "FLOAT",
+    "mode": "NULLABLE",
+    "description": "Minutes played per goal. NULL if no goal."
+  }
+]
