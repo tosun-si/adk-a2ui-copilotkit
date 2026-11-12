@@ -33,6 +33,11 @@ adk_agent = ADKAgent(
     # https://a2ui.org/.../basic_catalog.json". Pin it explicitly.
     # Must match CATALOG_ID in webapp/components/A2uiCatalog.tsx.
     a2ui={"default_catalog_id": "football_catalog"},
+    # A run that ends on a render_a2ui call stays "active" (pending client tool)
+    # per chat thread until the tool result comes back or 600 s pass. Default
+    # cap is 10: ten page reloads in ten minutes on stage → "Maximum concurrent
+    # executions (10) reached" and the agent stops answering.
+    max_concurrent_executions=200,
 )
 
 app = FastAPI(title="Football A2UI Agent (AG-UI)")

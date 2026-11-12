@@ -23,8 +23,8 @@ x-agent-base: &agent-base
     GOOGLE_GENAI_USE_VERTEXAI: ${GOOGLE_GENAI_USE_VERTEXAI:-true}
     # Model + the location its calls are routed to. gemini-3.8-flash is NOT in
     # europe-west1 (404) → MODEL_LOCATION=global. Empty = GOOGLE_CLOUD_LOCATION.
-    MODEL: ${MODEL:-gemini-2.5-flash}
-    MODEL_LOCATION: ${MODEL_LOCATION:-}
+    MODEL: ${MODEL:-gemini-3.8-flash}
+    MODEL_LOCATION: ${MODEL_LOCATION-global}
     GOOGLE_APPLICATION_CREDENTIALS: /tmp/adc.json
   volumes:
     - ${HOME}/.config/gcloud/application_default_credentials.json:/tmp/adc.json:ro

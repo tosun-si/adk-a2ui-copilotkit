@@ -17,11 +17,21 @@ entry without them. The root MUST be a layout component with `id: "root"`.
 Put the chart data INLINE in the Chart component's `data` property — do not
 create one component per data point.
 
-Minimal valid example for "top 5 scorers of France" (a bar chart):
+The Chart properties sit DIRECTLY on the component entry, next to `id` and
+`component`. Never nest them under the component name, never wrap the entry:
+
+- WRONG: `{ "Chart": { "chartType": "bar", ... } }` (no `id`, no `component`)
+- WRONG: `{ "id": "chart", "component": { "Chart": { "chartType": "bar" } } }`
+- RIGHT: `{ "id": "chart", "component": "Chart", "chartType": "bar", ... }`
+
+Before calling `render_a2ui`, check every entry of `components` has a string
+`id` and a string `component`.
+
+Minimal valid example for "top 5 scorers of the tournament" (a bar chart):
 
 ```json
 {
-  "surfaceId": "top-scorers-france",
+  "surfaceId": "top-scorers",
   "catalogId": "football_catalog",
   "components": [
     { "id": "root", "component": "Column", "children": ["chart"] },
@@ -29,12 +39,13 @@ Minimal valid example for "top 5 scorers of France" (a bar chart):
       "id": "chart",
       "component": "Chart",
       "chartType": "bar",
-      "title": "Top 5 buteurs — France",
+      "title": "Top 5 buteurs — Coupe du monde 2026",
       "xKey": "name",
       "yKeys": ["value"],
       "data": [
-        { "name": "Mbappé", "value": 8 },
-        { "name": "Giroud", "value": 4 }
+        { "name": "Mbappé", "value": 10 },
+        { "name": "Messi", "value": 8 },
+        { "name": "Haaland", "value": 7 }
       ]
     }
   ]
@@ -58,10 +69,12 @@ player, each data item is one axis):
       "xKey": "name",
       "yKeys": ["mbappe", "messi"],
       "data": [
-        { "name": "Buts", "mbappe": 8, "messi": 7 },
-        { "name": "Passes décisives", "mbappe": 2, "messi": 3 },
-        { "name": "Dribbles/90", "mbappe": 3.1, "messi": 2.6 },
-        { "name": "Tirs/90", "mbappe": 4.2, "messi": 3.8 }
+        { "name": "Buts", "mbappe": 10, "messi": 8 },
+        { "name": "Passes décisives", "mbappe": 4, "messi": 4 },
+        { "name": "Buts/90", "mbappe": 1.29, "messi": 0.97 },
+        { "name": "Minutes", "mbappe": 698, "messi": 740 },
+        { "name": "Titularisations", "mbappe": 8, "messi": 7 },
+        { "name": "Penaltys marqués", "mbappe": 1, "messi": 0 }
       ]
     }
   ]
@@ -73,7 +86,7 @@ use xKey/yKeys):
 
 ```json
 {
-  "surfaceId": "goals-by-team-phase",
+  "surfaceId": "goals-by-team-stage",
   "catalogId": "football_catalog",
   "components": [
     { "id": "root", "component": "Column", "children": ["chart"] },
@@ -81,12 +94,39 @@ use xKey/yKeys):
       "id": "chart",
       "component": "Chart",
       "chartType": "heatmap",
-      "title": "Buts par équipe et par mi-temps",
+      "title": "Buts par équipe et par phase",
       "data": [
-        { "x": "1re mi-temps", "y": "France", "value": 5 },
-        { "x": "2e mi-temps", "y": "France", "value": 3 },
-        { "x": "1re mi-temps", "y": "Argentine", "value": 4 },
-        { "x": "2e mi-temps", "y": "Argentine", "value": 6 }
+        { "x": "Group stage", "y": "France", "value": 10 },
+        { "x": "Round of 32", "y": "France", "value": 3 },
+        { "x": "Group stage", "y": "Spain", "value": 4 },
+        { "x": "Round of 32", "y": "Spain", "value": 3 }
+      ]
+    }
+  ]
+}
+```
+
+Line example — evolution over the tournament, one point per match in
+chronological order (query `player_matches` ordered by `match_id`):
+
+```json
+{
+  "surfaceId": "mbappe-goals-by-match",
+  "catalogId": "football_catalog",
+  "components": [
+    { "id": "root", "component": "Column", "children": ["chart"] },
+    {
+      "id": "chart",
+      "component": "Chart",
+      "chartType": "line",
+      "title": "Mbappé — buts cumulés match après match",
+      "xKey": "name",
+      "yKeys": ["value"],
+      "data": [
+        { "name": "Sénégal", "value": 2 },
+        { "name": "Irak", "value": 4 },
+        { "name": "Norvège", "value": 4 },
+        { "name": "Suède (16es)", "value": 6 }
       ]
     }
   ]
@@ -98,8 +138,9 @@ Rules:
   (not "chart_catalog", not a URL) — copy this literal string.
 - `chartType` is one of `"bar"`, `"line"`, `"pie"`, `"radar"`, `"heatmap"`.
   Pick the best fit: bar/line for rankings & trends, pie for shares of a whole,
-  radar for one entity profiled across several metrics, heatmap for a value
-  across two categories.
+  radar for one entity profiled across several metrics (each axis has its own
+  scale, so mixing minutes and goals is fine), heatmap for a value across two
+  categories, line for an evolution match after match or stage after stage.
 - `xKey` is the category key in each data item (usually `"name"`).
 - `yKeys` lists the numeric keys to plot (usually `["value"]`).
 - Limit `data` to 10 items.
