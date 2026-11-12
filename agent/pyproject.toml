@@ -1,14 +1,19 @@
 [project]
 name = "football-a2ui-agent"
 version = "0.1.0"
-description = "ADK BigQuery agent (Qatar 2022): adk web, Agent Engine (Agent Platform) and a native AG-UI endpoint for dynamic A2UI"
+description = "ADK BigQuery agent (World Cup 2026): adk web, Agent Engine (Agent Platform) and a native AG-UI endpoint for dynamic A2UI"
 requires-python = ">=3.11"
 # Agent runtime deps only — this is what gets exported to requirements.txt and
 # shipped to Agent Engine (`uv export --no-default-groups`).
 dependencies = [
     # otel-gcp: auto-instruments Gemini / httpx calls into spans.
-    "google-adk[agent-identity, mcp, a2a, otel-gcp]>=2.6.0",
-    "google-cloud-aiplatform[agent-engines]>=1.154.0",
+    # >=2.10 rebuilds an MCP session the server no longer holds (adk-python#7060):
+    # on 2.6 the single retry reused the dead session and the model was called
+    # WITHOUT the BigQuery tools (→ answers/charts from memory).
+    "google-adk[agent-identity, mcp, a2a, otel-gcp]>=2.14.0",
+    # >=2.2: `adk deploy agent_engine` (ADK 2.14) uses the `Client.runtimes`
+    # surface; 1.x only has `Client.agent_engines` and the deploy aborts.
+    "google-cloud-aiplatform[agent-engines]>=2.2,<3",
     # `--otel_to_cloud` exports spans/metrics over OTLP/HTTP to
     # telemetry.googleapis.com. Without this package the export silently
     # no-ops on Agent Engine → empty Trace tab.
@@ -25,7 +30,9 @@ dependencies = [
 # by default (`uv sync`), but NOT shipped to Agent Engine: the deploy script
 # exports with `--no-default-groups`.
 agui = [
-    "ag-ui-adk>=0.7.0",
+    # <0.8: 0.8+ requires ag-ui-protocol >=1.0, while the webapp is pinned to
+    # @ag-ui/client 0.0.53 (CopilotKit 1.57.3). Bump both sides together.
+    "ag-ui-adk>=0.7.0,<0.8",
     "fastapi>=0.115.0",
     "uvicorn[standard]>=0.34.0",
 ]

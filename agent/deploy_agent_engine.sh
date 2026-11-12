@@ -14,11 +14,11 @@ cd "$(dirname "$0")"
 PROJECT_ID="${GCP_PROJECT_ID:-gb-poc-373711}"
 REGION="${LOCATION:-europe-west1}"
 DISPLAY_NAME="${DISPLAY_NAME:-football-stats-agent-adk}"
-DESCRIPTION="Qatar 2022 World Cup stats agent — ADK + BigQuery MCP (Agent Registry)"
+DESCRIPTION="2026 World Cup stats agent — ADK + BigQuery MCP (Agent Registry)"
 AGENT_DIR="football_a2ui_agent"
 REQUIREMENTS_FILE="${AGENT_DIR}/requirements.txt"
 
-# requirements.txt MUST live in the agent folder (ADK 2.6 ignores
+# requirements.txt MUST live in the agent folder (ADK >=2.6 ignores
 # --requirements_file). Generated from pyproject.toml (single source of truth),
 # extras included. `--no-default-groups` drops the local-only groups (dev, agui:
 # ag-ui-adk is not needed on Agent Engine). Without an explicit file, adk deploy
