@@ -55,12 +55,12 @@ const definitions = {
         .array(z.record(z.union([z.string(), z.number()])))
         .describe(
           "The data points (max 10). Shape depends on chartType:\n" +
-            "- bar/line/pie: [{\"name\":\"Mbappé\",\"value\":8}, ...].\n" +
+            "- bar/line/pie: [{\"name\":\"Mbappé\",\"value\":10}, ...].\n" +
             "- radar: each item is ONE axis/metric; add one numeric key per " +
-            "entity, e.g. [{\"name\":\"Buts\",\"mbappe\":8,\"messi\":7}, " +
-            "{\"name\":\"Passes\",\"mbappe\":2,\"messi\":3}] with " +
+            "entity, e.g. [{\"name\":\"Buts\",\"mbappe\":10,\"messi\":8}, " +
+            "{\"name\":\"Minutes\",\"mbappe\":698,\"messi\":740}] with " +
             "yKeys=['mbappe','messi'].\n" +
-            "- heatmap: [{\"x\":\"1st half\",\"y\":\"France\",\"value\":5}, ...] " +
+            "- heatmap: [{\"x\":\"Group stage\",\"y\":\"France\",\"value\":10}, ...] " +
             "with x, y (categories) and value (number)."
         ),
     }),

@@ -6,7 +6,7 @@ import { Providers } from "@/components/Providers";
 export const metadata: Metadata = {
   title: "Football A2UI Agent",
   description:
-    "Qatar 2022 World Cup stats with native, agent-driven A2UI generative charts",
+    "2026 World Cup stats with native, agent-driven A2UI generative charts",
 };
 
 export default function RootLayout({

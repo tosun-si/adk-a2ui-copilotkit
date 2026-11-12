@@ -46,7 +46,18 @@ function buildOption(spec: EChartSpec): echarts.EChartsOption {
         tooltip: { trigger: "axis" },
         legend: yKeys.length > 1 ? { top: title ? 28 : 4 } : undefined,
         grid: { left: 8, right: 16, bottom: 8, top: 48, containLabel: true },
-        xAxis: { type: "category", data: categories as string[] },
+        xAxis: {
+          type: "category",
+          data: categories as string[],
+          // Show EVERY label: by default ECharts hides overlapping ones, and
+          // the hidden bar was the one we wanted to show (PSG, 2nd club).
+          axisLabel: {
+            interval: 0,
+            rotate: categories.length > 5 ? 30 : 0,
+            width: 110,
+            overflow: "truncate",
+          },
+        },
         yAxis: { type: "value" },
         series: yKeys.map((k) => ({
           name: k,
@@ -62,12 +73,13 @@ function buildOption(spec: EChartSpec): echarts.EChartsOption {
         color: PALETTE,
         title,
         tooltip: { trigger: "item" },
-        legend: { bottom: 0 },
+        // No legend: slice labels already name each part, and a wrapped
+        // legend overlapped the bottom labels.
         series: [
           {
             type: "pie",
-            radius: "62%",
-            center: ["50%", "52%"],
+            radius: "60%",
+            center: ["50%", "55%"],
             data: data.map((d) => ({ name: String(d[xKey]), value: num(d[key]) })),
           },
         ],
@@ -77,16 +89,19 @@ function buildOption(spec: EChartSpec): echarts.EChartsOption {
       // Each data item is one axis; each yKey is one series (entity). This
       // supports both a single profile (yKeys=["value"]) and a comparison of
       // several entities overlaid (e.g. yKeys=["mbappe","messi"]).
-      const axes = data.map((d) => String(d[xKey]));
-      const maxVal =
-        Math.max(1, ...data.flatMap((d) => yKeys.map((k) => num(d[k])))) * 1.15;
+      // One scale PER AXIS: metrics differ by orders of magnitude (minutes ~700
+      // vs goals ~10), a shared max would flatten the small ones.
+      const indicator = data.map((d) => ({
+        name: String(d[xKey]),
+        max: Math.max(...yKeys.map((k) => num(d[k])), 0.1) * 1.15,
+      }));
       return {
         color: PALETTE,
         title,
         tooltip: {},
         legend: yKeys.length > 1 ? { bottom: 0 } : undefined,
         radar: {
-          indicator: axes.map((name) => ({ name, max: maxVal })),
+          indicator,
           radius: "60%",
         },
         series: [
@@ -114,7 +129,12 @@ function buildOption(spec: EChartSpec): echarts.EChartsOption {
         title,
         tooltip: { position: "top" },
         grid: { height: "58%", top: 48, left: 8, right: 16, containLabel: true },
-        xAxis: { type: "category", data: xs, splitArea: { show: true } },
+        xAxis: {
+          type: "category",
+          data: xs,
+          splitArea: { show: true },
+          axisLabel: { interval: 0, rotate: xs.length > 4 ? 25 : 0 },
+        },
         yAxis: { type: "category", data: ys, splitArea: { show: true } },
         visualMap: {
           min: 0,

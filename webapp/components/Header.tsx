@@ -8,7 +8,7 @@ export function Header() {
         <div>
           <h1 className="text-xl font-bold">Football Stats Agent</h1>
           <p className="text-sm text-emerald-200">
-            Qatar 2022 World Cup Statistics
+            World Cup 2026 Statistics
           </p>
         </div>
       </div>
