@@ -1,9 +1,9 @@
 # Demo Kit — GDG Paris : « ADK en action : du développement au déploiement d'un agent IA »
 
-20 min. Même agent tout du long : ADK + BigQuery MCP (Agent Registry), Qatar 2022.
+20 min. Même agent tout du long : ADK + BigQuery MCP (Agent Registry), Coupe du monde 2026 (Qatar 2022 pour GDG Paris).
 
-- Engine déployé : `football-stats-agent-adk` — `AGENT_ENGINE_ID=5448783803071856640` (europe-west1)
-- Console (Playground) : https://console.cloud.google.com/vertex-ai/agents/agent-engines/locations/europe-west1/agent-engines/5448783803071856640/playground?project=gb-poc-373711
+- Engine déployé : `AGENT_ENGINE_ID=3830629241939034112` (europe-west1, ADK 2.14). L'ancien `5448783803071856640` (GDG Paris) a été supprimé le 29/09
+- Console (Playground) : https://console.cloud.google.com/vertex-ai/agents/agent-engines/locations/europe-west1/agent-engines/3830629241939034112/playground?project=gb-poc-373711
 - Slides : `uv run --with python-pptx python talks/generate_slides.py` → `talks/slides/talk_gdg_paris_adk.pptx`
 - Schéma : `diagrams/adk_agent_platform_archi.excalidraw` (+ `.png` utilisé par la slide)
 
@@ -12,7 +12,7 @@
 ```bash
 gcloud auth login && gcloud auth application-default login   # ADC expiré = agent muet
 ./scripts/setup_gcp.sh                                        # APIs + IAM (idempotent)
-cd agent && AGENT_ENGINE_ID=5448783803071856640 ./deploy_agent_engine.sh   # update in place, même URL console
+cd agent && AGENT_ENGINE_ID=3830629241939034112 ./deploy_agent_engine.sh   # update in place, même URL console
 ```
 
 - Pré-déployer : un déploiement prend plusieurs minutes, **ne jamais le faire en live**, montrer seulement la commande.
@@ -22,7 +22,7 @@ cd agent && AGENT_ENGINE_ID=5448783803071856640 ./deploy_agent_engine.sh   # upd
 
 ```bash
 docker compose down -v && docker compose up --build
-cd agent && AGENT_ENGINE_ID=5448783803071856640 uv run python ../scripts/query_agent_engine.py   # réveille l'engine + crée une trace fraîche
+cd agent && AGENT_ENGINE_ID=3830629241939034112 uv run python ../scripts/query_agent_engine.py   # réveille l'engine + crée une trace fraîche
 ```
 
 Onglets navigateur ouverts dans l'ordre :
@@ -41,35 +41,62 @@ Onglets navigateur ouverts dans l'ordre :
 |---|---|---|---|
 | 1 | ADK web `:8080` | Chat + panneau **Events** : le LLM appelle `execute_sql_readonly` (et parfois `get_table_info`) via MCP. Cliquer un event → la requête SQL générée. | « Qui a marqué le plus de buts ? » |
 | 2 | Éditeur | `agent.py` : `LlmAgent` + `AgentRegistry` → toolset MCP (15 lignes utiles). Prompts en `.md`, `tool_filter` read-only. | — |
-| 3 | Webapp `:3000` | Même agent en AG-UI : le LLM choisit et construit le graphique (A2UI). Voir les questions ci-dessous. | « Compare Mbappé et Messi » |
+| 3 | Webapp `:3000` | Même agent en AG-UI : le LLM choisit et construit le graphique (A2UI). Voir les questions ci-dessous. | « Compare Mbappé et Dembélé » |
 | 4 | Terminal | `deploy_agent_engine.sh` : `uv export` → `adk deploy agent_engine --otel_to_cloud`. **Ne pas exécuter**, l'engine est déjà là. | — |
-| 5 | Playground | **Même code, même réponse**, mais managé : scale-to-zero, sessions managées, IAM. Events **et** traces sont dans cet onglet. | « Top 5 passeurs de la France » |
+| 5 | Playground | **Même code, même réponse**, mais managé : scale-to-zero, sessions managées, IAM. Events **et** traces sont dans cet onglet. | « Top 3 buteurs de la France » |
 | 6 | Traces | Arbre de spans `invoke_agent → call_llm → execute_tool`, SQL dans les attributs, tokens, latence LLM vs BigQuery. Repli : Cloud Trace. | — |
 | 7 | Agent Registry | Catalogue des MCP servers managés Google (BigQuery, …) : l'agent les découvre par `displayName`, sans URL en dur. | — |
 | 8 | Terminal + éditeur | `agents-cli` : le scaffolding d'un projet ADK par l'assistant de code (voir la rubrique dédiée). | — |
 | 9 | IDE | Le même agent en **Java** (builder `LlmAgent.builder()`), et un mot sur Kotlin. | — |
 
-## Questions pour la webapp A2UI (`:3000`)
+## Questions DevFest Paris — Coupe du monde 2026, fil rouge PSG
 
-Ordre conseillé : du plus fiable au plus spectaculaire. Le LLM choisit lui-même le type de graphique ; les ajouts entre parenthèses (« en radar », « en camembert ») servent à l'orienter si besoin.
+Dataset `fifa_world_cup_2026` (4 tables, voir `data/README.md`). Réponses
+attendues calculées depuis les données (vérifiées contre la liste FIFA des
+buteurs). Statut : **non testé en live** tant que la stack n'a pas tourné.
 
-| # | Question | Graphique attendu | Statut |
+### Webapp A2UI (`:3000`) — du plus fiable au plus spectaculaire
+
+| # | Question | Graphique | Réponse attendue |
 |---|---|---|---|
-| 1 | « Compare Mbappé et Messi sur buts, passes décisives et dribbles par match » | radar, 2 joueurs superposés | ✅ testé, a marché à chaque essai → **ouvrir avec celle-ci** |
-| 2 | « Qui sont les 5 meilleurs buteurs du tournoi ? Montre-moi un graphique. » | bar | ⚠️ testé, 7/9 (le reste : `Catalog not found`) |
-| 3 | « Répartition des buts de la France par poste, en camembert » | pie (FW / MF / DF) | non testé |
-| 4 | « Buts et passes décisives des 5 meilleurs joueurs de la France » | bar multi-séries (`yKeys` = buts, passes) | non testé |
-| 5 | « Heatmap des buts par poste pour l'Argentine, la France, le Maroc et la Croatie » | heatmap (x = poste, y = équipe) | non testé |
+| 1 | « Compare Mbappé et Dembélé : buts, passes décisives, buts par 90, minutes, titularisations » | radar | Mbappé 10 / 4 / 1,29 / 698 / 8 — Dembélé 6 / 2 / 0,91 / 596 / 7 |
+| 2 | « Top 5 des buteurs du tournoi » | bar | Mbappé 10, Messi 8, Haaland 7, Bellingham 7, Dembélé 6 (ex æquo avec Kane, départagé aux minutes) |
+| 3 | « Quels clubs ont fourni le plus de buts ? » | bar | Real Madrid 22, **PSG 16**, Arsenal 13 → « Paris, 2ᵉ club du Mondial » |
+| 4 | « Les joueurs du PSG au Mondial, par sélection, en camembert » | pie | France 5, Portugal 4, puis 1 chacun (Brésil, Maroc, Espagne, Sénégal, Équateur, Corée du Sud, Tunisie) — 16 joueurs |
+| 5 | « Top 5 des passeurs décisifs du tournoi » | bar | Olise 7, puis Mbappé, Messi, Brahim Díaz, Bruno Guimarães, Ødegaard à 4 (ex æquo) |
+| 6 | « Buts de Mbappé match après match » | line | 2, 2, 0, 2, 1, 1, 0, 2 (Sénégal → Angleterre) |
+| 7 | « Heatmap des buts par phase pour la France, l'Espagne, l'Argentine et l'Angleterre » | heatmap | France : 10 en poules, 0 en demie ; Espagne : 1 en finale (buts d'équipe, CSC adverses compris). **15–45 s** : la poser en dernier |
+
+### Questions fun (texte, ADK web ou webapp)
+
+- « Quel joueur du PSG est champion du monde ? » → **Fabián Ruiz** (Espagne), le seul.
+- « Qui est le plus jeune buteur du tournoi ? » → **Ibrahim Mbaye**, 18 ans, PSG (Sénégal).
+- « Quel match a eu le plus de buts ? » → la petite finale **France 4–6 Angleterre** (10 buts).
+- « Qui a le plus de buts + passes décisives ? » → Mbappé 14 (10 + 4), Messi 12, puis Dembélé et Bellingham 8.
+- « Le joueur du PSG le plus décisif ? » → Dembélé 8 (6 buts + 2 passes), Barcola 4, Hakimi 3.
+- « Combien de joueurs de Ligue 1 au Mondial ? » → 84 (PSG 16, Nice 8, Lille 8, Strasbourg 7).
+- « Comment a fini la France ? » → 4ᵉ : défaite 0–2 contre l'Espagne en demie, puis 4–6 contre l'Angleterre.
+- « Qui a gagné la finale ? » → Espagne 1–0 Argentine a.p., Ferran Torres (106ᵉ).
+
+### Le piège à poser exprès
+
+« Quels sont les xG de Mbappé ? » (ou « combien de tirs ? ») → l'agent doit
+répondre que le dataset ne contient pas cette stat et proposer buts / passes /
+buts par 90. Punchline : « pas de colonne, pas de chiffre inventé ».
+
+Anecdote data à raconter : les passes décisives viennent de FBref et ont été
+recoupées avec API-Football (top 20 identique). Le dataset Kaggle le plus
+complet donnait Olise à 8 au lieu de 7 et Dembélé à 5 buts au lieu de 6 : la
+qualité de la donnée d'entrée, c'est la moitié d'un agent « talk to my data ».
 
 Si ça plante :
 
-- `A2UI render error: Catalog not found: …basic_catalog.json` → **reposer la même question**. Punchline : « le LLM construit l'UI lui-même : puissant, mais pas déterministe ». C'est l'argument dynamique vs statique de l'article.
-- Le LLM répond « je ne peux pas faire ce graphique » → ajouter le type explicitement (« en radar », « en heatmap »).
-- Pas de réponse du tout → ADC expiré (`gcloud auth application-default login`), pas un bug A2UI.
-
-Questions à éviter : les cartons ou les stats par phase ou par match (la table n'a pas ces colonnes), et les courbes « dans le temps » (pas de dimension temporelle, le line chart sera artificiel).
-
-Pont narratif avec ADK web : « même agent, même code, autre runtime ». `server.py` active A2UI (`ENABLE_A2UI`), `adk web` non.
+- `A2UI render error: Catalog not found` → reposer la même question.
+- `Component 'Chart' is missing an 'id'` → reposer ; c'est le défaut connu de
+  3.8-flash, mitigé dans `prompts/a2ui.md`. Punchline dynamique vs statique.
+- L'agent cite Giroud, Lloris ou des chiffres 2022 → il a répondu de mémoire
+  (sa connaissance s'arrête avant 2026) : « vérifie dans la base ».
+- Pas de réponse du tout → ADC expiré (`gcloud auth application-default login`).
 
 ## agents-cli : montrer la commande (étape 8)
 
@@ -134,20 +161,18 @@ Puis ouvrir le projet généré dans l'éditeur : même structure que celle qu'o
 
 Si tu es court en temps : ne rien lancer, montrer juste la slide et la commande.
 
-## Modèle : pourquoi on reste en 2.5-flash
+## Modèle : gemini-3.8-flash (endpoint global)
 
-`gemini-3.8-flash` marche (testé le 21/09), mais **uniquement via l'endpoint
-`global`** — 404 en `europe-west1`. Et sur A2UI il est moins fiable : 2 échecs
-sur 5 (`Component 'Chart' is missing an 'id'`) contre 2 sur 9 en 2.5
-(`Catalog not found`). Le radar passe dans les deux cas.
+Défaut depuis le 11/11/2026 : `gemini-3.8-flash`, dernier Flash GA.
+`gemini-2.5-flash` a été retiré de Vertex le 20/10/2026, ce n'est plus un repli.
+3.8 n'est servi que sur l'endpoint `global` (404 en `europe-west1`) →
+`MODEL_LOCATION=global` par défaut ; seuls les appels modèle y partent, BigQuery
+et Agent Registry restent en europe-west1. À dire à l'oral : « le template
+d'agents-cli génère déjà du 3.8 ».
 
-Donc : **2.5-flash pour le talk**. À dire à l'oral : « le template d'agents-cli
-génère déjà du 3.8, qui n'est servi que sur l'endpoint global ». Pour basculer
-malgré tout :
-
-```bash
-MODEL=gemini-3.8-flash MODEL_LOCATION=global docker compose up --build
-```
+Point de vigilance A2UI : en septembre 3.8 donnait `Component 'Chart' is missing
+an 'id'` 2 fois sur 5 → règle WRONG/RIGHT ajoutée dans `prompts/a2ui.md`, à
+re-mesurer avant la scène (10 runs par question du tableau).
 
 ## Autres idées à montrer sur Agent Platform (si le temps le permet)
 
@@ -171,11 +196,12 @@ Le problème des talks précédents. Dans l'ordre :
 7. Vérifier les env vars réellement appliquées à l'engine : console → engine → Deployment details, ou le log de `adk deploy` (`env_vars`).
 8. Laisser 1–2 min de latence d'ingestion avant de conclure que c'est vide.
 
-## Questions testées sur l'engine (18/09)
+## Smoke test de l'engine (2026)
 
-- « Qui sont les 3 meilleurs buteurs de la France ? » → Mbappe 8, Giroud 4, Tchouaméni 1
-- « Combien de buts pour Mbappé ? » → 8 (règle accents dans `query_workflow.md`)
-- « Top 5 passeurs du tournoi » → Perisic, B. Fernandes, Kane, Messi, Griezmann (3 chacun)
+- « Qui sont les 3 meilleurs buteurs de la France ? » → Mbappé 10, Dembélé 6, Barcola 3
+- « Combien de buts pour Mbappe ? » (sans accent) → 10 (`player_search_name`)
+- « Top 5 buteurs du tournoi » → Mbappé 10, Messi 8, Haaland 7, Bellingham 7, Dembélé 6
+- « Combien de passes décisives pour Olise ? » → 7
 
 ## Recovery
 

@@ -2,7 +2,7 @@
 
 How the agent ends up drawing a chart in the browser — the Python side, the
 frontend side, and what travels between them. Everything here was verified
-against the running stack (ADK 2.6, `ag-ui-adk` 0.7.0, CopilotKit 1.57.3).
+against the running stack (ADK 2.6 then 2.14, `ag-ui-adk` 0.7.0, CopilotKit 1.57.3).
 
 ## The idea in one paragraph
 
@@ -188,6 +188,10 @@ produce only the chart types it has seen written out.
 Observed with `gemini-3.8-flash` (2 runs in 5); `gemini-2.5-flash` instead hits
 the catalog error. Neither model is clean, which is why the talk demo opens with
 the radar question, the most reliable one.
+
+`gemini-2.5-flash` was retired on Vertex on 2026-10-20, so 3.8 is now the
+default and `prompts/a2ui.md` spells out the WRONG/RIGHT entry shape (props
+flat on the entry, never nested under `"Chart"`).
 
 ## Dynamic vs static — the trade-off
 

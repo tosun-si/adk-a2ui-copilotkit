@@ -2,8 +2,8 @@
 
 Native **A2UI** (agent-driven generative UI) with **Google ADK** + **CopilotKit**.
 
-Same use case as the previous article — a Qatar 2022 FIFA World Cup stats agent
-that queries BigQuery through MCP (via Agent Registry) — but here the agent
+Same use case as the previous article — a FIFA World Cup stats agent (now on the
+**2026** edition, see [`data/`](data/README.md)) that queries BigQuery through MCP (via Agent Registry) — but here the agent
 **drives the UI itself** through Google's A2UI protocol, instead of tunneling a
 chart JSON blob through a BFF.
 
