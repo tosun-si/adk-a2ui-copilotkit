@@ -39,7 +39,8 @@ CopilotRuntime { agents: { default: HttpAgent(/chat) }, a2ui: { injectA2UITool: 
 - [`docs/a2ui.md`](docs/a2ui.md) — how A2UI works here: the Python side
   (`AGUIToolset`, `ADKAgent`), the frontend side (catalog, renderers), what
   travels between them, and the two failure modes with their causes.
-- [`talks/DEMO_KIT.md`](talks/DEMO_KIT.md) — talk demo flow and recovery.
+- [`talks/demo_adk_en_action.md`](talks/demo_adk_en_action.md) — demo flow of the « ADK en action » talk (deploy, traces, agents-cli).
+- [`talks/demo_nl_to_sql.md`](talks/demo_nl_to_sql.md) — demo flow and questions of the NL to SQL talk (DevFest Paris).
 
 ## Commands
 
@@ -110,7 +111,7 @@ AGENT_ENGINE_ID=<id> uv run python ../scripts/query_agent_engine.py "Top 5 buteu
 ```
 
 Then use the Playground / Traces / Sessions tabs of the engine in the console.
-Empty Traces tab → see the checklist in `talks/DEMO_KIT.md`.
+Empty Traces tab → see the checklist in `talks/demo_adk_en_action.md`.
 
 ## agents-cli (skills Google, installées dans le repo)
 

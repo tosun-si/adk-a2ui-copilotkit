@@ -1,4 +1,7 @@
-# Demo Kit — GDG Paris : « ADK en action : du développement au déploiement d'un agent IA »
+# Démo — talk « ADK en action : du développement au déploiement d'un agent IA »
+
+Donné au GDG Cloud Paris. L'autre talk de ce repo, « Qui a marqué le plus de buts ? »
+(NL to SQL, DevFest Paris), a son propre déroulé : [`demo_nl_to_sql.md`](demo_nl_to_sql.md).
 
 20 min. Même agent tout du long : ADK + BigQuery MCP (Agent Registry), Coupe du monde 2026 (Qatar 2022 pour GDG Paris).
 
@@ -41,62 +44,13 @@ Onglets navigateur ouverts dans l'ordre :
 |---|---|---|---|
 | 1 | ADK web `:8080` | Chat + panneau **Events** : le LLM appelle `execute_sql_readonly` (et parfois `get_table_info`) via MCP. Cliquer un event → la requête SQL générée. | « Qui a marqué le plus de buts ? » |
 | 2 | Éditeur | `agent.py` : `LlmAgent` + `AgentRegistry` → toolset MCP (15 lignes utiles). Prompts en `.md`, `tool_filter` read-only. | — |
-| 3 | Webapp `:3000` | Même agent en AG-UI : le LLM choisit et construit le graphique (A2UI). Voir les questions ci-dessous. | « Compare Mbappé et Dembélé » |
+| 3 | Webapp `:3000` | Même agent en AG-UI : le LLM choisit et construit le graphique (A2UI). Questions : voir [`demo_nl_to_sql.md`](demo_nl_to_sql.md#questions). | « Compare Mbappé et Dembélé » |
 | 4 | Terminal | `deploy_agent_engine.sh` : `uv export` → `adk deploy agent_engine --otel_to_cloud`. **Ne pas exécuter**, l'engine est déjà là. | — |
 | 5 | Playground | **Même code, même réponse**, mais managé : scale-to-zero, sessions managées, IAM. Events **et** traces sont dans cet onglet. | « Top 3 buteurs de la France » |
 | 6 | Traces | Arbre de spans `invoke_agent → call_llm → execute_tool`, SQL dans les attributs, tokens, latence LLM vs BigQuery. Repli : Cloud Trace. | — |
 | 7 | Agent Registry | Catalogue des MCP servers managés Google (BigQuery, …) : l'agent les découvre par `displayName`, sans URL en dur. | — |
 | 8 | Terminal + éditeur | `agents-cli` : le scaffolding d'un projet ADK par l'assistant de code (voir la rubrique dédiée). | — |
 | 9 | IDE | Le même agent en **Java** (builder `LlmAgent.builder()`), et un mot sur Kotlin. | — |
-
-## Questions DevFest Paris — Coupe du monde 2026, fil rouge PSG
-
-Dataset `fifa_world_cup_2026` (4 tables, voir `data/README.md`). Réponses
-attendues calculées depuis les données (vérifiées contre la liste FIFA des
-buteurs). Statut : **non testé en live** tant que la stack n'a pas tourné.
-
-### Webapp A2UI (`:3000`) — du plus fiable au plus spectaculaire
-
-| # | Question | Graphique | Réponse attendue |
-|---|---|---|---|
-| 1 | « Compare Mbappé et Dembélé : buts, passes décisives, buts par 90, minutes, titularisations » | radar | Mbappé 10 / 4 / 1,29 / 698 / 8 — Dembélé 6 / 2 / 0,91 / 596 / 7 |
-| 2 | « Top 5 des buteurs du tournoi » | bar | Mbappé 10, Messi 8, Haaland 7, Bellingham 7, Dembélé 6 (ex æquo avec Kane, départagé aux minutes) |
-| 3 | « Quels clubs ont fourni le plus de buts ? » | bar | Real Madrid 22, **PSG 16**, Arsenal 13 → « Paris, 2ᵉ club du Mondial » |
-| 4 | « Les joueurs du PSG au Mondial, par sélection, en camembert » | pie | France 5, Portugal 4, puis 1 chacun (Brésil, Maroc, Espagne, Sénégal, Équateur, Corée du Sud, Tunisie) — 16 joueurs |
-| 5 | « Top 5 des passeurs décisifs du tournoi » | bar | Olise 7, puis Mbappé, Messi, Brahim Díaz, Bruno Guimarães, Ødegaard à 4 (ex æquo) |
-| 6 | « Buts de Mbappé match après match » | line | 2, 2, 0, 2, 1, 1, 0, 2 (Sénégal → Angleterre) |
-| 7 | « Heatmap des buts par phase pour la France, l'Espagne, l'Argentine et l'Angleterre » | heatmap | France : 10 en poules, 0 en demie ; Espagne : 1 en finale (buts d'équipe, CSC adverses compris). **15–45 s** : la poser en dernier |
-
-### Questions fun (texte, ADK web ou webapp)
-
-- « Quel joueur du PSG est champion du monde ? » → **Fabián Ruiz** (Espagne), le seul.
-- « Qui est le plus jeune buteur du tournoi ? » → **Ibrahim Mbaye**, 18 ans, PSG (Sénégal).
-- « Quel match a eu le plus de buts ? » → la petite finale **France 4–6 Angleterre** (10 buts).
-- « Qui a le plus de buts + passes décisives ? » → Mbappé 14 (10 + 4), Messi 12, puis Dembélé et Bellingham 8.
-- « Le joueur du PSG le plus décisif ? » → Dembélé 8 (6 buts + 2 passes), Barcola 4, Hakimi 3.
-- « Combien de joueurs de Ligue 1 au Mondial ? » → 84 (PSG 16, Nice 8, Lille 8, Strasbourg 7).
-- « Comment a fini la France ? » → 4ᵉ : défaite 0–2 contre l'Espagne en demie, puis 4–6 contre l'Angleterre.
-- « Qui a gagné la finale ? » → Espagne 1–0 Argentine a.p., Ferran Torres (106ᵉ).
-
-### Le piège à poser exprès
-
-« Quels sont les xG de Mbappé ? » (ou « combien de tirs ? ») → l'agent doit
-répondre que le dataset ne contient pas cette stat et proposer buts / passes /
-buts par 90. Punchline : « pas de colonne, pas de chiffre inventé ».
-
-Anecdote data à raconter : les passes décisives viennent de FBref et ont été
-recoupées avec API-Football (top 20 identique). Le dataset Kaggle le plus
-complet donnait Olise à 8 au lieu de 7 et Dembélé à 5 buts au lieu de 6 : la
-qualité de la donnée d'entrée, c'est la moitié d'un agent « talk to my data ».
-
-Si ça plante :
-
-- `A2UI render error: Catalog not found` → reposer la même question.
-- `Component 'Chart' is missing an 'id'` → reposer ; c'est le défaut connu de
-  3.8-flash, mitigé dans `prompts/a2ui.md`. Punchline dynamique vs statique.
-- L'agent cite Giroud, Lloris ou des chiffres 2022 → il a répondu de mémoire
-  (sa connaissance s'arrête avant 2026) : « vérifie dans la base ».
-- Pas de réponse du tout → ADC expiré (`gcloud auth application-default login`).
 
 ## agents-cli : montrer la commande (étape 8)
 

@@ -76,7 +76,8 @@ A2UI runs natively (the LLM drives the UI).
 │   ├── setup_gcp.sh            # APIs (incl. telemetry.googleapis.com) + IAM for the AE service agent
 │   ├── query_agent_engine.py   # smoke test / warm-up of the deployed engine
 │   └── cleanup_old_engines.sh  # GC old Reasoning Engines (dry-run by default)
-├── talks/DEMO_KIT.md           # GDG Paris talk: demo flow, Agent Platform ideas, empty-traces checklist
+├── talks/demo_adk_en_action.md # talk 1 « ADK en action »: demo flow, Agent Platform ideas, empty-traces checklist
+├── talks/demo_nl_to_sql.md     # talk 2 NL to SQL (DevFest Paris): Docker Compose demo flow, questions + expected answers
 └── docker-compose.yaml         # adk-web (:8080) + agent (:8000 AG-UI /chat) + webapp (:3000)
 ```
 
@@ -186,7 +187,9 @@ Baseline 67/70; with all guards, 105/105 on ADK 2.6 and on 2.14.
   ouvrir le pptx dans PowerPoint puis « save as PDF » (AppleScript), ou à la main
 - `diagrams/adk_agent_platform_archi.excalidraw` (+ exported `.png` used by the
   architecture slide — re-export from Excalidraw after editing)
-- `talks/DEMO_KIT.md` — demo flow + pre-stage checklist
+- Two talks share this repo, one demo file each: `talks/demo_adk_en_action.md`
+  (GDG Cloud Paris) and `talks/demo_nl_to_sql.md` (DevFest Paris; deck lives in
+  `~/my-projects/conferences/devfest_paris/2026/talk_nl_to_sql/`)
 
 ## agents-cli skills (workspace scope)
 
