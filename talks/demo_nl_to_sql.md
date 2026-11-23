@@ -19,11 +19,14 @@ gcloud auth application-default login            # ADC expiré = agent muet, san
 docker compose build                             # images prêtes, le jour J le up est immédiat
 docker compose up -d
 cd agent && python3 -I tests/a2ui_bench.py -n 15   # banc A2UI : attendu 105/105 (7 questions × 15)
+uv run pytest tests/test_golden.py -q            # golden dataset : 13/13 (faits + pièges, SQL obligatoire)
 docker compose down
 ```
 
-Le banc rejoue la vraie requête CopilotKit sur les 7 questions de la démo. À
-relancer après tout changement de prompt, de modèle ou de version d'ADK.
+Le banc rejoue la vraie requête CopilotKit sur les 7 questions de la démo (les
+graphiques). Le golden dataset (`agent/golden_dataset/`) vérifie les faits des
+réponses texte et que l'agent refuse d'inventer (xG, tirs). À relancer tous les
+deux après tout changement de prompt, de modèle ou de version d'ADK.
 
 ## 5 min avant de monter sur scène
 
@@ -73,6 +76,8 @@ Même agent, servi en AG-UI : le LLM choisit le type de graphique et le construi
 
 **3. Le piège** — « Quels sont les xG de Mbappé ? » (voir plus bas).
 
+Sur scène, jouer la [version courte](#questions) : 4 questions, ~4 min.
+
 **4. (option) Playground de l'engine** — même code, même réponse, mais managé.
 Fait le lien avec la slide « En production ».
 
@@ -83,7 +88,26 @@ Réponses attendues calculées depuis les données (vérifiées contre la liste 
 des buteurs). Les 7 questions de la webapp passent le banc A2UI à 105/105
 (12/11/2026).
 
-### Webapp A2UI (`:3000`) — ordre conseillé
+### ⭐ Version courte — 4 questions (celle à jouer sur scène)
+
+| # | Où | Question | Réponse attendue | Pourquoi |
+|---|---|---|---|---|
+| 1 | ADK web `:8080` | « Qui a marqué le plus de buts ? » | Mbappé, 10 buts | Le titre du talk ; le SQL généré est visible dans **Events** |
+| 2 | Webapp `:3000` | « Compare Mbappé et Dembélé : buts, passes décisives, buts par 90, minutes, titularisations » | radar : Mbappé 10 / 4 / 1,29 / 698 / 8 — Dembélé 6 / 2 / 0,91 / 596 / 7 | Le LLM choisit seul le radar : l'effet A2UI, fil rouge PSG |
+| 3 | Webapp `:3000` | « Quel joueur du PSG est champion du monde ? » | **Fabián Ruiz** (Espagne), le seul | La surprise de la salle, réponse texte rapide |
+| 4 | Webapp `:3000` | « Quels sont les xG de Mbappé ? » (ou « Combien de tirs a fait Mbappé ? ») | L'agent dit que la stat n'existe pas dans les données et propose buts / passes / buts par 90 | Finir sur le message : « pas de colonne, pas de chiffre inventé » |
+
+S'il reste une minute : « Quels clubs ont fourni le plus de buts ? » → Real Madrid 22,
+**PSG 16**, Arsenal 13 (réaction garantie dans une salle parisienne).
+
+xG = *expected goals* : la probabilité qu'un tir finisse en but (distance, angle,
+type d'action), additionnée sur tous les tirs. Stat connue des fans, absente du
+dataset (pas de données tir par tir). « Combien de tirs ? » est le même piège,
+compris par toute la salle.
+
+Les listes ci-dessous restent en réserve (questions de la salle, plan B).
+
+### Webapp A2UI (`:3000`) — liste complète, ordre conseillé
 
 | # | Question | Graphique | Réponse attendue |
 |---|---|---|---|

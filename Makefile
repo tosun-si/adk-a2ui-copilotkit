@@ -5,7 +5,7 @@ AGENT_ENGINE_ID ?= 3830629241939034112
 QUESTION        ?= Qui sont les 3 meilleurs buteurs de la France ?
 
 .DEFAULT_GOAL := help
-.PHONY: help up down agents-cli-skills agents-cli-skills-update deploy ask slides
+.PHONY: help up down agents-cli-skills agents-cli-skills-update deploy ask golden slides
 
 help:  ## Show this help
 	@grep -E '^[a-z][a-z0-9-]*:.*?## ' $(MAKEFILE_LIST) | awk 'BEGIN{FS=":.*?## "}{printf "  \033[36m%-26s\033[0m %s\n", $$1, $$2}'
@@ -27,6 +27,9 @@ deploy:  ## Deploy/update the agent on Agent Engine (takes minutes — never liv
 
 ask:  ## Ask the deployed agent a question (warms it up before the talk)
 	cd agent && AGENT_ENGINE_ID=$(AGENT_ENGINE_ID) uv run python ../scripts/query_agent_engine.py "$(QUESTION)"
+
+golden:  ## Replay the golden dataset (13 cases) against adk web :8080 — stack must be up
+	cd agent && uv run pytest tests/test_golden.py -v
 
 slides:  ## Regenerate the talk deck from talks/slides_content.py
 	uv run --with python-pptx python talks/generate_slides.py

@@ -53,7 +53,9 @@ A2UI runs natively (the LLM drives the UI).
 │   │   └── .ae_ignore          # excluded from the adk deploy source bundle
 │   ├── server.py               # ag-ui-adk: ADKAgent + add_adk_fastapi_endpoint(path="/chat"), sets ENABLE_A2UI
 │   ├── deploy_agent_engine.sh  # uv export → adk deploy agent_engine --otel_to_cloud
+│   ├── golden_dataset/         # golden dataset 2026: dataset.yaml (13 cases) + runner (adk web :8080)
 │   ├── tests/a2ui_bench.py     # A2UI reliability bench (replays the captured CopilotKit request)
+│   ├── tests/test_golden.py    # golden dataset as pytest (2 retries per case)
 │   ├── pyproject.toml          # single-package uv project; groups: agui (local only), dev
 │   ├── uv.lock
 │   └── Dockerfile

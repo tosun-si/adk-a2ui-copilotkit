@@ -1,0 +1,114 @@
+# Golden dataset — World Cup 2026 agent (talk NL to SQL, DevFest Paris).
+#
+# Each case is a question + what the TEXT answer must (or must not) contain.
+# The expected values are computed from BigQuery `fifa_world_cup_2026` and
+# cross-checked with the FIFA goalscorer list (see data/README.md). Charts are
+# covered separately by tests/a2ui_bench.py; this dataset checks the facts.
+#
+# The dataset is a contract: if the data or the prompts change on purpose,
+# recompute the expected values and update them here deliberately.
+#
+# Expectation keys (all optional, all must hold; text is compared lower-case,
+# without accents, so "Mbappé" == "mbappe"):
+#   contains_all:  every string must appear
+#   contains_any:  at least one string must appear
+#   ordered:       these strings must appear in this order (an item can be a
+#                  list of alternatives, e.g. ["paris saint-germain", "psg"])
+#   numbers:       every number must appear as a standalone number
+#   matching_any:  at least one regex must match (e.g. a negation for a refusal)
+#   not_matching:  regexes that must NOT match (e.g. an invented xG value)
+#   requires_sql:  default true — the answer fails if execute_sql_readonly did
+#                  not run in the turn (a right number from memory is a fail)
+
+# --- the 4 questions of the stage demo (talks/demo_nl_to_sql.md) -------------
+
+- id: top_scorer
+  question: "Qui a marqué le plus de buts ?"
+  expect:
+    contains_all: ["mbappe"]
+    numbers: [10]
+
+- id: radar_mbappe_dembele_facts
+  question: "Compare Mbappé et Dembélé : buts, passes décisives, minutes jouées, titularisations"
+  expect:
+    contains_all: ["mbappe", "dembele"]
+    numbers: [10, 6, 4, 2, 698, 596, 8, 7]
+
+- id: psg_world_champion
+  question: "Quel joueur du PSG est champion du monde ?"
+  expect:
+    contains_all: ["fabian ruiz"]
+
+- id: trap_xg
+  question: "Quels sont les xG de Mbappé ?"
+  expect:
+    # the model words its refusal differently every run ("ne comportent pas",
+    # "ne prennent pas en compte", "n'est pas disponible"…): match a negation
+    matching_any: &refusal
+      - "\\bne\\s+(\\S+\\s+){1,2}pas\\b"      # ne comportent pas, ne sont pas suivis
+      - "\\bn'\\S+\\s+pas\\b"                  # n'est pas, n'existe pas
+      - "\\baucune?\\b"                         # aucune donnée
+      - "\\bnot\\s+(available|tracked|included)"
+    not_matching:
+      - "\\d+[.,]\\d+\\s*(xg|expected)"   # an invented "6.8 xG"
+    requires_sql: false                   # checking the schema is enough to refuse
+
+# --- reliability: traps and data quirks ---------------------------------------
+
+- id: trap_shots
+  question: "Combien de tirs a fait Mbappé ?"
+  expect:
+    matching_any: *refusal
+    not_matching:
+      - "\\b\\d+\\s*tirs"                  # an invented "35 tirs"
+    requires_sql: false
+
+- id: accentless_player_name
+  question: "Combien de buts pour Mbappe ?"
+  expect:
+    numbers: [10]
+
+# --- facts behind the other demo questions -----------------------------------
+
+- id: top3_france_scorers
+  question: "Qui sont les 3 meilleurs buteurs de la France ?"
+  expect:
+    ordered: ["mbappe", "dembele", "barcola"]
+    numbers: [10, 6, 3]
+
+- id: top5_tournament_scorers
+  question: "Top 5 des buteurs du tournoi"
+  expect:
+    ordered: ["mbappe", "messi", "haaland"]
+    contains_all: ["bellingham", "dembele"]
+    numbers: [10, 8, 7, 6]
+
+- id: olise_assists
+  question: "Combien de passes décisives pour Olise ?"
+  expect:
+    contains_all: ["olise"]
+    numbers: [7]
+
+- id: clubs_most_goals
+  question: "Quels clubs ont fourni le plus de buts ? Donne le top 3."
+  expect:
+    ordered: ["real madrid", ["paris saint-germain", "psg"], "arsenal"]
+    numbers: [22, 16, 13]
+
+- id: psg_most_decisive
+  question: "Quel joueur du PSG est le plus décisif (buts + passes décisives) ?"
+  expect:
+    contains_all: ["dembele"]
+    numbers: [8]
+
+- id: youngest_scorer
+  question: "Qui est le plus jeune buteur du tournoi ?"
+  expect:
+    contains_all: ["mbaye"]
+    numbers: [18]
+
+- id: final_winner
+  question: "Qui a gagné la finale ?"
+  expect:
+    contains_any: ["espagne", "spain"]
+    contains_all: ["ferran torres"]
