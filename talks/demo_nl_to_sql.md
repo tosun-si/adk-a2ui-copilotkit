@@ -49,6 +49,12 @@ Onglets ouverts dans l'ordre :
 2. `http://localhost:3000` — webapp CopilotKit + A2UI
 3. (option) Console Agent Platform → engine `3830629241939034112` → Playground
 
+Dans une **fenêtre Chrome séparée**, pour la mini-démo CA (slide 17) :
+
+4. BigQuery → Agents → `football_world_cup_2026` : un onglet par vue
+   (Instructions, Glossary, Verified queries) + un onglet de chat. Poser la
+   question une fois en répétition (tables chaudes, temps de réponse connu).
+
 ## Pendant le talk
 
 | Slides | Ce qu'on montre | Où |
@@ -60,8 +66,11 @@ Onglets ouverts dans l'ordre :
 | **13 — Démo time** | **La démo ci-dessous** | onglets 1 puis 2 |
 | 14 | Développer en local avec Gemma | slide seule (la démo Gemma vit dans `football-agent-adk-gemma-dmr`) |
 | 15 | System instructions modulaires | (option) éditeur : `prompts/schema.md`, `prompts/business_rules.md` |
-| 16-20 | RAG, validation technique et métier, production, à retenir | slides |
-| 21-22 | Feedback, merci | slides |
+| 16 | Des données prêtes pour l'agent | slide seule (exemples : `team_matches`, `player_search_name`, descriptions de colonnes) |
+| **17 — Conversational Analytics** | **Mini-démo console, 2-3 min** (voir ci-dessous) | fenêtre Chrome CA (onglet 4) |
+| 18 | Et le RAG dans tout ça ? (contexte trop gros, doc non structurée) | slides |
+| 19-22 | Validation technique et métier, production, à retenir | slides |
+| 23-24 | Feedback, merci | slides |
 
 ### Démo (slide 13)
 
@@ -77,6 +86,22 @@ Même agent, servi en AG-UI : le LLM choisit le type de graphique et le construi
 **3. Le piège** — « Quels sont les xG de Mbappé ? » (voir plus bas).
 
 Sur scène, jouer la [version courte](#questions) : 4 questions, ~4 min.
+
+### Mini-démo Conversational Analytics (slide 17)
+
+Annoncer : « Je vous montre ça en 2 minutes dans la console. » Basculer au
+clavier sur la fenêtre CA.
+
+1. **Instructions, Glossary, Verified queries** : le contexte de la slide, en
+   vrai. Préciser qu'il est poussé par `make data-agent` depuis le repo
+   `adk-conversational-analytics` (versionné dans git), la console ne sert qu'à
+   le visualiser.
+2. **Une question** : « Quel est le joueur du PSG le plus décisif ? » →
+   Dembélé, 8 contributions, avec la citation du glossaire (Goal contributions)
+   et le SQL généré.
+3. Retour aux slides (18, le RAG).
+
+Plan B si la console rame : rester sur la slide 17 et raconter.
 
 **4. (option) Playground de l'engine** — même code, même réponse, mais managé.
 Fait le lien avec la slide « En production ».
